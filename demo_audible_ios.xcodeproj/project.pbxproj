@@ -14,6 +14,8 @@
 		D19A8F371EAA6A6A0039DECA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D19A8F351EAA6A6A0039DECA /* LaunchScreen.storyboard */; };
 		D19A8F421EAA6A6A0039DECA /* demo_audible_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A8F411EAA6A6A0039DECA /* demo_audible_iosTests.swift */; };
 		D19A8F4D1EAA6A6A0039DECA /* demo_audible_iosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A8F4C1EAA6A6A0039DECA /* demo_audible_iosUITests.swift */; };
+		D19A8F5B1EAA76EE0039DECA /* AnchorToTop.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A8F5A1EAA76EE0039DECA /* AnchorToTop.swift */; };
+		D19A8F5D1EAA7C920039DECA /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A8F5C1EAA7C920039DECA /* PageCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		D19A8F481EAA6A6A0039DECA /* demo_audible_iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = demo_audible_iosUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D19A8F4C1EAA6A6A0039DECA /* demo_audible_iosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demo_audible_iosUITests.swift; sourceTree = "<group>"; };
 		D19A8F4E1EAA6A6A0039DECA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D19A8F5A1EAA76EE0039DECA /* AnchorToTop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnchorToTop.swift; sourceTree = "<group>"; };
+		D19A8F5C1EAA7C920039DECA /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +102,9 @@
 			isa = PBXGroup;
 			children = (
 				D19A8F2C1EAA6A6A0039DECA /* AppDelegate.swift */,
+				D19A8F5A1EAA76EE0039DECA /* AnchorToTop.swift */,
 				D19A8F2E1EAA6A6A0039DECA /* ViewController.swift */,
+				D19A8F5C1EAA7C920039DECA /* PageCell.swift */,
 				D19A8F301EAA6A6A0039DECA /* Main.storyboard */,
 				D19A8F331EAA6A6A0039DECA /* Assets.xcassets */,
 				D19A8F351EAA6A6A0039DECA /* LaunchScreen.storyboard */,
@@ -263,6 +269,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D19A8F2F1EAA6A6A0039DECA /* ViewController.swift in Sources */,
+				D19A8F5B1EAA76EE0039DECA /* AnchorToTop.swift in Sources */,
+				D19A8F5D1EAA7C920039DECA /* PageCell.swift in Sources */,
 				D19A8F2D1EAA6A6A0039DECA /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  demo_audible_ios
-//
-//  Created by Raoni Valadares on 4/21/17.
-//  Copyright © 2017 rov. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain
