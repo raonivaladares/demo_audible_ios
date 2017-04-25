@@ -16,6 +16,7 @@ class ViewController: UIViewController {
   }()
   
   let cellID = "cellID"
+  let loginCellID = "loginCellID"
   
   let pages: [Page] = {
     let firstPage = Page(title: "Share a great listen", message: "It's free to send your books to people in your life, Every reciepient's first book is on us.", imageName: "page1")
@@ -25,11 +26,11 @@ class ViewController: UIViewController {
     return [firstPage, secondPage, thirdPage]
   }()
   
-  let pageControl: UIPageControl = {
+  lazy var pageControl: UIPageControl = {
     let pc = UIPageControl()
     pc.pageIndicatorTintColor = .lightGray
     pc.currentPageIndicatorTintColor = UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1)
-    pc.numberOfPages = 3
+    pc.numberOfPages = self.pages.count + 1
     return pc
   }()
   
@@ -56,24 +57,41 @@ class ViewController: UIViewController {
     view.addSubview(pageControl)
     
     collectionView.anchorToTop(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
-    collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
     
     _ = skipButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50)
     
     _ = nextButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50)
     
     _ = pageControl.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 40)
+    
+    registerCell()
+  }
+  
+  func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    let pageNumber = Int(targetContentOffset.pointee.x / view.frame.width)
+    pageControl.currentPage = pageNumber
+  }
+  
+  private func registerCell() {
+    collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
+    collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: loginCellID)
+    
   }
 }
 
 extension ViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return pages.count
+    return pages.count + 1
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! PageCell
+    if indexPath.item == pages.count {
+      let loginCell = collectionView.dequeueReusableCell(withReuseIdentifier: loginCellID, for: indexPath)
+      
+      return loginCell
+    }
     
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! PageCell
     let page = pages[indexPath.item]
     cell.page = page
     
