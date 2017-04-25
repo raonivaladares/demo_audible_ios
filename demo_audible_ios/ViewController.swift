@@ -25,12 +25,44 @@ class ViewController: UIViewController {
     return [firstPage, secondPage, thirdPage]
   }()
   
+  let pageControl: UIPageControl = {
+    let pc = UIPageControl()
+    pc.pageIndicatorTintColor = .lightGray
+    pc.currentPageIndicatorTintColor = UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1)
+    pc.numberOfPages = 3
+    return pc
+  }()
+  
+  let skipButton: UIButton = {
+    let button = UIButton(type: .system)
+    button.setTitle("Skip", for: .normal)
+    button.setTitleColor(UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1), for: .normal)
+    return button
+  }()
+  
+  let nextButton: UIButton = {
+    let button = UIButton(type: .system)
+    button.setTitle("Next", for: .normal)
+    button.setTitleColor(UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1), for: .normal)
+    return button
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
     view.addSubview(collectionView)
+    view.addSubview(skipButton)
+    view.addSubview(nextButton)
+    view.addSubview(pageControl)
+    
     collectionView.anchorToTop(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
+    
+    _ = skipButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50)
+    
+    _ = nextButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50)
+    
+    _ = pageControl.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 40)
   }
 }
 
