@@ -1,6 +1,6 @@
 import UIKit
 // UICollectionViewDelegate
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
   
   lazy var collectionView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
@@ -167,7 +167,7 @@ class ViewController: UIViewController {
 }
 
 // MARK: Extensions
-extension ViewController: UICollectionViewDataSource {
+extension LoginViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return pages.count + 1
   }
@@ -185,7 +185,7 @@ extension ViewController: UICollectionViewDataSource {
   }
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension LoginViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return CGSize(width: view.frame.width, height: view.frame.height)
   }
