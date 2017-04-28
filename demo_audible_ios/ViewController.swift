@@ -80,6 +80,17 @@ class ViewController: UIViewController {
     pageControlBottomAnchor = pageControl.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 40)?[1]
   }
   
+  private func moveControlConstraintsOffScreen() {
+    pageControlBottomAnchor?.constant = 40
+    skipButtonTopAnchor?.constant = -40
+    nextButtonTopAnchor?.constant = -40
+  }
+  
+  private func registerCell() {
+    collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
+    collectionView.register(LoginCell.self, forCellWithReuseIdentifier: loginCellID)
+  }
+  
   private func observeKeyboardNotifications() {
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardShow), name: .UIKeyboardWillShow, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
@@ -88,7 +99,8 @@ class ViewController: UIViewController {
   // MARK: Selector methods
   @objc private func keyboardShow() {
     UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-      self.view.frame = CGRect(x: 0, y: -50, width: self.view.frame.width, height: self.view.frame.height)
+      let y: CGFloat = UIDevice.current.orientation.isLandscape ? -100 : -50
+      self.view.frame = CGRect(x: 0, y: y, width: self.view.frame.width, height: self.view.frame.height)
     }, completion: nil)
   }
   
@@ -105,7 +117,6 @@ class ViewController: UIViewController {
     
     if pageControl.currentPage == pages.count - 1 {
       moveControlConstraintsOffScreen()
-      
       UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
         self.view.layoutIfNeeded()
       }, completion: nil)
@@ -144,15 +155,14 @@ class ViewController: UIViewController {
     }, completion: nil)
   }
   
-  private func moveControlConstraintsOffScreen() {
-    pageControlBottomAnchor?.constant = 40
-    skipButtonTopAnchor?.constant = -40
-    nextButtonTopAnchor?.constant = -40
-  }
-  
-  private func registerCell() {
-    collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
-    collectionView.register(LoginCell.self, forCellWithReuseIdentifier: loginCellID)
+  override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+    print(UIDevice.current.orientation.isLandscape)
+    collectionView.collectionViewLayout.invalidateLayout()
+    let indexPath = IndexPath(item: pageControl.currentPage, section: 0)
+    DispatchQueue.main.async {
+      self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+      self.collectionView.reloadData()
+    }
   }
 }
 

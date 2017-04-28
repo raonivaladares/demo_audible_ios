@@ -7,7 +7,8 @@ class PageCell: UICollectionViewCell {
         return
       }
       
-      imageView.image = UIImage(named: page.imageName)
+      let imageName = UIDevice.current.orientation.isLandscape ? page.imageName + "_landscape" : page.imageName
+      imageView.image = UIImage(named: imageName)
       
       let color = UIColor(white: 0.2, alpha: 1)
       let attributedText = NSMutableAttributedString(string: page.title, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 20, weight: UIFontWeightMedium), NSForegroundColorAttributeName: color])
