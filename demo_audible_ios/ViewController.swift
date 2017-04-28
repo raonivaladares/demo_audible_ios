@@ -29,7 +29,7 @@ class ViewController: UIViewController {
   lazy var pageControl: UIPageControl = {
     let pc = UIPageControl()
     pc.pageIndicatorTintColor = .lightGray
-    pc.currentPageIndicatorTintColor = UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1)
+    pc.currentPageIndicatorTintColor = .orange
     pc.numberOfPages = self.pages.count + 1
     return pc
   }()
@@ -37,14 +37,16 @@ class ViewController: UIViewController {
   let skipButton: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Skip", for: .normal)
-    button.setTitleColor(UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1), for: .normal)
+    button.setTitleColor(.orange, for: .normal)
+    button.addTarget(self, action: #selector(skip), for: .touchUpInside)
     return button
   }()
   
   let nextButton: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Next", for: .normal)
-    button.setTitleColor(UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1), for: .normal)
+    button.setTitleColor(.orange, for: .normal)
+    button.addTarget(self, action: #selector(nextPage), for: .touchUpInside)
     return button
   }()
   
@@ -52,9 +54,18 @@ class ViewController: UIViewController {
   var skipButtonTopAnchor: NSLayoutConstraint?
   var nextButtonTopAnchor: NSLayoutConstraint?
   
+  // MARK: View life-cycle
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    observeKeyboardNotifications()
+    
+    buildUI()
+    registerCell()
+  }
+  
+  // MARK: Private methods
+  private func buildUI() {
     view.addSubview(collectionView)
     view.addSubview(skipButton)
     view.addSubview(nextButton)
@@ -67,8 +78,52 @@ class ViewController: UIViewController {
     nextButtonTopAnchor = nextButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50)?.first
     
     pageControlBottomAnchor = pageControl.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 40)?[1]
+  }
+  
+  private func observeKeyboardNotifications() {
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardShow), name: .UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
+  }
+  
+  // MARK: Selector methods
+  @objc private func keyboardShow() {
+    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+      self.view.frame = CGRect(x: 0, y: -50, width: self.view.frame.width, height: self.view.frame.height)
+    }, completion: nil)
+  }
+  
+  @objc private func keyboardHide() {
+    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+      self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+    }, completion: nil)
+  }
+  
+  @objc private func nextPage() {
+    guard pageControl.currentPage < pages.count else {
+      return
+    }
     
-    registerCell()
+    if pageControl.currentPage == pages.count - 1 {
+      moveControlConstraintsOffScreen()
+      
+      UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+        self.view.layoutIfNeeded()
+      }, completion: nil)
+    }
+    
+    let indexPath = IndexPath(item: pageControl.currentPage + 1, section: 0)
+    collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    pageControl.currentPage += 1
+  }
+  
+  @objc private func skip() {
+    pageControl.currentPage = pages.count - 1
+    nextPage()
+  }
+  
+  // MARK: Internal methods
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    view.endEditing(true)
   }
   
   func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -77,9 +132,7 @@ class ViewController: UIViewController {
     
     
     if pageNumber == pages.count {
-      skipButtonTopAnchor?.constant = -40
-      nextButtonTopAnchor?.constant = -40
-      pageControlBottomAnchor?.constant = 40
+      moveControlConstraintsOffScreen()
     } else {
       skipButtonTopAnchor?.constant = 16
       nextButtonTopAnchor?.constant = 16
@@ -91,13 +144,19 @@ class ViewController: UIViewController {
     }, completion: nil)
   }
   
+  private func moveControlConstraintsOffScreen() {
+    pageControlBottomAnchor?.constant = 40
+    skipButtonTopAnchor?.constant = -40
+    nextButtonTopAnchor?.constant = -40
+  }
+  
   private func registerCell() {
     collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellID)
-    collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: loginCellID)
-    
+    collectionView.register(LoginCell.self, forCellWithReuseIdentifier: loginCellID)
   }
 }
 
+// MARK: Extensions
 extension ViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return pages.count + 1
@@ -106,14 +165,12 @@ extension ViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     if indexPath.item == pages.count {
       let loginCell = collectionView.dequeueReusableCell(withReuseIdentifier: loginCellID, for: indexPath)
-      
       return loginCell
     }
     
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! PageCell
     let page = pages[indexPath.item]
     cell.page = page
-    
     return cell
   }
 }
